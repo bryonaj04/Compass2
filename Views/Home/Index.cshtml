@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+
+
+@model SchedulerViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meeting Scheduler</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Meeting Scheduler</h1>
+    </header>
+    <main>
+        <form id="myForm" asp-controller="Scheduler" asp-action="ScheduleMeeting" method="post">
+            <label for="meeting-title" class="pb-2">Meeting Title:</label>
+            <input type="text" id="Title" name="Title" asp-for="@Model.Meetings.Title" required>
+
+            <label for="meeting-date">Meeting Date:</label>
+            <input type="date" id="MeetingDate" name="MeetingDate" asp-for="@Model.Meetings.MeetingDate" required>
+
+            <label for="meeting-time">Meeting Start Time:</label>
+            <input type="time" id="StartTime" name="StartTime" asp-for="@Model.Meetings.StartTime" required>
+
+            <label for="meeting-time">Meeting End Time:</label>
+            <input type="time" id="EndTime" name="EndTime" asp-for="@Model.Meetings.EndTime" required>
+
+
+            <label for="SelectedParticipants">Participants:</label>
+            <select id="SelectedParticipants" name="ParticipantsId" asp-for="@Model.Meetings.ParticipantsId">
+                @foreach (var person in Model.People)
+                {
+                    <option value="@person.Id">@person.Name</option>
+                }
+            </select>
+
+            <label for="Room">Room:</label>
+            <select id="Room" name="RoomId" asp-for="@Model.Meetings.RoomId">
+                @foreach (var room in @Model.Rooms)
+                {
+                    <option value="@room.Id">@room.Name</option>
+                }
+            </select>
+
+            <button type="submit">Schedule Meeting</button>
+
+            @if (TempData.ContainsKey("Message"))
+            {
+                var message = TempData["Message"] as string;
+                if (!string.IsNullOrEmpty(message))
+                {
+                    if (message.Contains("already") || message.Contains("room") || message.Contains("people") || message.Contains("date") || message.Contains("time"))
+                    {
+                        <div class="alert alert-danger">@message</div>
+                    }
+
+                    else
+                    {
+                        <div class="alert alert-success">@message</div>
+                    }
+                }
+            }
+
+        </form>
+    </main>
+</body>
+</html>
+
+
+
